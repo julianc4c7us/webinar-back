@@ -42,6 +42,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api", routes);
+app.use("/api/health", (req, res) => {
+  res.send("ok");
+});
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
