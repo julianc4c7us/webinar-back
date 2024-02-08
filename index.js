@@ -7,6 +7,10 @@ const routes = Router();
 
 const publicRoutes = Router();
 
+publicRoutes.get("/" , (req, res) => {
+  res.send("Public route");
+});
+
 const privateRoutes = Router();
 
 publicRoutes.post("/login", (req, res) => {
@@ -22,33 +26,25 @@ publicRoutes.post("/login", (req, res) => {
   }
 });
 
-// privateRoutes.get("/", (req, res) => {
-//   if (!req.headers.authorization) {
-//     res.status(401).send("Unauthorized");
-//   }
+const validateAuth = (req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(401).send("Unauthorized");
+  }
 
-//   try {
-//     res.send("Private route");
-//   } catch (error) {
-//     res.status(500).send("Internal server error");
-//   }
-// });
+  try {
+    return res.send("Private route");
+  } catch (error) {
+    return res.status(500).send("Internal server error");
+  }
+};
+
+
 
 routes.use("/public", publicRoutes);
-routes.use("/private", (_, _, next) => {
-  console.log("ruta privada aqui")
-  next((req, res) => {
-    if (!req.headers.authorization) {
-      res.status(401).send("Unauthorized");
-    }
-  
-    try {
-      res.send("Private route");
-    } catch (error) {
-      res.status(500).send("Internal server error");
-    }
-  })
-});
+routes.use("/private", (_, __, next) => {
+  console.log("ruta privada aqui");
+  next()
+}, validateAuth);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
