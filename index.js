@@ -41,7 +41,7 @@ const validateAuth = (req, res) => {
 
 
 routes.use("/public", publicRoutes);
-routes.use("/private", (_, __, next) => {
+routes.use("/priv", (_, __, next) => {
   console.log("ruta privada aqui");
   next()
 }, validateAuth);
